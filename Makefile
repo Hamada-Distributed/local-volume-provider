@@ -34,7 +34,7 @@ ci: verify-modules local test
 container:
 	docker run --privileged --rm tonistiigi/binfmt --install all
 	docker buildx create --name mybuilder --driver docker-container --bootstrap --use
-	docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --pull -t $(PLUGIN_IMAGE):$(VERSION) -f deploy/local-volume-provider/Dockerfile --build-arg VERSION=$(VERSION) . --push
+	docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --pull -t ghcr.io/hamada-distributed/local-volume-provider:$(VERSION) -f deploy/local-volume-provider/Dockerfile --build-arg VERSION=$(VERSION) . --push
 
 # push pushes the Docker image to its registry.
 .PHONY: push
