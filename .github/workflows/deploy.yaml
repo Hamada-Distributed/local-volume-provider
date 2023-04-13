@@ -15,16 +15,15 @@ jobs:
       id: get_tag
       shell: bash
       run: echo ::set-output name=GIT_TAG::${GITHUB_REF/refs\/tags\//}
-    - uses: azure/docker-login@v1
-      env:
-          DOCKER_CONFIG: ./.docker
+    - uses: docker/login-action@v2
       with:
-        username: ${{ secrets.DOCKERHUB_USER }}
-        password: ${{ secrets.DOCKERHUB_PASSWORD }}
+        registry: ghcr.io
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GITHUB_TOKEN }}
     - name: Build
       env:
         VERSION: ${{ steps.get_tag.outputs.GIT_TAG }}
+        BUILDFLAGS: -ldflags=" -X github.com/replicatedhq/local-volume-provider/pkg/version.version=${{ steps.get_tag.outputs.GIT_TAG }} "
         DOCKER_CONFIG: ./.docker
       run: |
-        make container 
-        make push
+        make container
